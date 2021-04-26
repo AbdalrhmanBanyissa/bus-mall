@@ -38,10 +38,11 @@ function resultsBut( ) {
   for ( let i = 0; i < Product.arr.length; i++ ) {
     const liElements = document.createElement( 'li' );
     list.appendChild( liElements );
-    liElements.textContent = 'Product Name: ' + Product.arr[i].productName + ', Number of Selection: ' + Product.arr[i].clicks + ', Number of views: ' + Product.arr[i].views;
+    liElements.textContent = Product.arr[i].productName + ' had ' + Product.arr[i].clicks + ' votes, and was seen ' + Product.arr[i].views + ' times.';
 
   }
   doSomething ();
+  chartRender ();
 }
 
 let clickNumber = 0;
@@ -95,9 +96,6 @@ let render = function () {
 
   do {
     midP = random( 0, productNameArr.length - 1 );
-  } while ( leftP == midP || leftP == rightP || midP == rightP );
-
-  do {
     rightP = random( 0, productNameArr.length - 1 );
   } while ( leftP == midP || leftP == rightP || midP == rightP );
 
@@ -113,6 +111,51 @@ let render = function () {
   Product.arr[midP].views++;
   Product.arr[rightP].views++;
 
+};
+
+let chartRender = function (){
+
+  let clicks = [];
+  let names = [];
+  let shown = [];
+  for( let i = 0; i < Product.arr.length; i++ ) {
+    clicks.push( Product.arr[i].clicks );
+    names.push( Product.arr[i].productName );
+    shown.push( Product.arr[i].views );
+
+  }
+
+  let ctx = document.getElementById( 'myChart' ).getContext( '2d' );
+  let myChart = new Chart( ctx, {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{
+        label: '# of Votes',
+        data: clicks,
+        backgroundColor:
+          'rgb(0, 0, 0)',
+        borderColor:
+          'rgb(245, 219, 179)',
+        borderWidth: 1,
+      }, {
+        label: '# of shown',
+        data: shown,
+        backgroundColor:
+          'rgb(245, 219, 179)',
+        borderColor:
+          'rgb(0, 0, 0)',
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  } );
 };
 
 imgDiv.addEventListener( 'click', controller );
