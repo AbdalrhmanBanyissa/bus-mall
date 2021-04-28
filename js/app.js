@@ -10,7 +10,21 @@ let productNameArr = [
 function random ( min, max ) {
   min = Math.ceil( min );
   max = Math.floor( max );
-  return Math.floor( Math.random() * ( max - min + 1 ) + min ); //The maximum is inclusive and the minimum is inclusive
+
+  let randomNum;
+  let isAcceptable;
+
+  do{
+    randomNum = Math.floor( Math.random() * ( max - min + 1 ) + min ); //The maximum is inclusive and the minimum is inclusive
+    isAcceptable = true;
+
+    for ( let i = 0; i < Product.arr.length; i++ ){
+      if ( Product.arr[i] === randomNum ){
+        isAcceptable = false;
+      }
+    }
+  }while( !isAcceptable );
+  return randomNum;
 }
 
 const imgDiv = document.getElementById( 'productImgDiv' );
@@ -56,9 +70,14 @@ function Product ( name ){
   this.views = 0;
   this.clicks = 0;
   Product.arr.push( this );
+
+
+
 }
 
 Product.arr = [];
+
+
 
 for ( let i = 0; i < productNameArr.length; i++ ){
   new Product ( productNameArr[i] );
@@ -69,6 +88,7 @@ function controller( event ) {
 
     if( event.target.id == 'left' ) {
       Product.arr[leftSideImage].clicks++;
+
     }
 
     if( event.target.id == 'mid' ) {
@@ -80,6 +100,9 @@ function controller( event ) {
     }
 
     clickNumber++;
+
+    localStorage.clickNumber = Number( localStorage.clickNumber ) + 1;
+
     render();
 
   } else if ( clickNumber == 25 ) {
@@ -90,6 +113,7 @@ function controller( event ) {
 }
 
 let render = function () {
+
   let leftP = random ( 0, productNameArr.length - 1 );
   let midP;
   let rightP;
@@ -110,6 +134,8 @@ let render = function () {
   Product.arr[leftP].views++;
   Product.arr[midP].views++;
   Product.arr[rightP].views++;
+
+  localStorage.setItem( 'arr' ,JSON.stringify( Product.arr ) );
 
 };
 
